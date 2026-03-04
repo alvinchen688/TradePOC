@@ -10,11 +10,13 @@ namespace TradePOC.Domain.Events
     public class CardBalanceChangedEvent : INotification
     {
         public Card Card { get; }
+        public string TransactionId { get; }
         public decimal Amount { get; }
         public BalanceChangeType ChangeType { get; }
-        public CardBalanceChangedEvent(Card card, decimal amount, BalanceChangeType changeType)
+        public CardBalanceChangedEvent(Card card,string transactionId, decimal amount, BalanceChangeType changeType)
         {
             Card = card;
+            TransactionId = transactionId;
             Amount = amount;
             ChangeType = changeType;
         }

@@ -37,7 +37,7 @@ namespace TradePOC.Infrastructure.Repositories
         }
 
         // 原子尝试扣款（内存模拟，单机线程安全）
-        public async Task<bool> TryDeductBalanceAsync(string cardNo, decimal amount)
+        public async Task<bool> TryDeductBalanceAsync(string cardNo,string transId, decimal amount)
         {
             if (!_mockCards.TryGetValue(cardNo, out var card))
                 return await Task.FromResult(false);
@@ -51,7 +51,7 @@ namespace TradePOC.Infrastructure.Repositories
                 if (card.Balance < amount) 
                     return Task.FromResult(false).Result; // 保持同步返回路径在锁内部
 
-                card.DeductBalance(amount);
+                card.DeductBalance(transId, amount);
                 _mockCards[cardNo] = card;
 
                 // 取出事件快照并清空原集合，避免在序列化/发布时被并发修改

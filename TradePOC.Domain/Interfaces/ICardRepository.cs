@@ -8,6 +8,6 @@ namespace TradePOC.Domain.Interfaces
     public interface ICardRepository
     {
         Task<Card?> GetByCardNoAsync(string cardNo);
-        Task<bool> TryDeductBalanceAsync(string cardNo, decimal amount);
+        Task<bool> TryDeductBalanceAsync(string cardNo, string transId, decimal amount);
     }
 }

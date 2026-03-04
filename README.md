@@ -1,6 +1,6 @@
 # TradePOC
 
-TradePOC 是一个基于 .NET 10.0 的高性能交易对账系统概念验证项目，采用现代化架构设计和最佳实践。
+TradePOC 是一个基于 .NET 10.0 的高性能交易对账系统概念验证项目，采用现代化架构设计和最佳实践。目前只支持单机线程安全，可以使用分布式锁达成分布式环境的原子性
 
 ## 解决方案架构
 
@@ -16,8 +16,9 @@ TradePOC 是一个基于 .NET 10.0 的高性能交易对账系统概念验证项
 - **依赖注入**: 通过Microsoft.Extensions.DependencyInjection管理对象生命周期
 - **高并发处理**: 支持模拟高并发交易对账请求
 - **事件驱动**: 基于领域事件的异步处理机制
-- **内存缓存**: 集成MemoryCache提升性能
+- **内存缓存**: 集成MemoryCache提升性能，可以替换为Redis
 - **消息队列**: 支持RabbitMQ进行异步通信
+- **EFCore**: 使用了模拟数据而非真实的数据库连接， 方便运行测试。 可以改为EFCore， 利用数据库锁和事务机制控制高并发下的线程安全问题。
 
 ### 技术栈
 - .NET 10.0
@@ -25,7 +26,7 @@ TradePOC 是一个基于 .NET 10.0 的高性能交易对账系统概念验证项
 - Microsoft.Extensions.DependencyInjection
 - Microsoft.Extensions.Hosting
 - RabbitMQ (消息队列)
-- MemoryCache (缓存)
+- MemoryCache/Redis (缓存)
 
 ### 功能演示
 程序启动后会自动模拟1000个并发交易对账请求，验证系统的高并发处理能力。

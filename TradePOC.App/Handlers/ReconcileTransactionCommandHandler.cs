@@ -30,9 +30,6 @@ namespace TradePOC.App.Handlers
             // 优先快速检查（非原子），但必须在关键区再次校验DB/缓存
             if (await _cacheService.ExistsAsync(cacheKey))
                 return Result<bool>.Fail("交易已处理，请勿重复提交");
-            // 幂等检查（先查 DB/仓储）
-            if (await _transactionRepo.ExistsAsync(request.TransactionId))
-                return Result<bool>.Fail("交易已存在");
 
             // 创建事务实体并尝试加入仓储（保证 TransactionId 唯一）
             var transaction = Transaction.Create(request.TransactionId, request.CardNo, request.Amount);
@@ -41,7 +38,7 @@ namespace TradePOC.App.Handlers
                 return Result<bool>.Fail("交易已存在");
 
             // 原子扣款（由仓储保证）
-            var deductOk = await _cardRepo.TryDeductBalanceAsync(request.CardNo, request.Amount);
+            var deductOk = await _cardRepo.TryDeductBalanceAsync(request.CardNo, request.TransactionId, request.Amount);
             if (!deductOk)
             {
                 transaction.Complete(false);
@@ -49,15 +46,10 @@ namespace TradePOC.App.Handlers
                 return Result<bool>.Fail("余额不足或扣款失败");
             }
 
-            // 扣款成功，标记并更新事务与缓存
+            // 扣款成功
             transaction.Complete(true);
             await _transactionRepo.UpdateAsync(transaction);
-
-            var cardCacheKey = $"card:{request.CardNo}";
-            var card = await _cardRepo.GetByCardNoAsync(request.CardNo);
-            await _cacheService.SetAsync(cardCacheKey, card, TimeSpan.FromMinutes(10));
-
-            await _cacheService.SetAsync(cacheKey, true, TimeSpan.FromHours(24));
+            await _cacheService.SetAsync(cacheKey, true, TimeSpan.FromSeconds(120));
 
             return Result<bool>.Ok(true);
         }

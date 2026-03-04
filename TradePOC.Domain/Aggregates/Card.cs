@@ -25,7 +25,7 @@ namespace TradePOC.Domain.Aggregates
         }
 
         // 充血模型：封装余额变更逻辑
-        public void DeductBalance(decimal amount)
+        public void DeductBalance(string transId, decimal amount)
         {
             if (!IsActive)
                 throw new InvalidOperationException("卡已冻结，无法扣款");
@@ -33,13 +33,14 @@ namespace TradePOC.Domain.Aggregates
                 throw new InvalidOperationException("卡余额不足");
 
             Balance -= amount;
-            AddDomainEvent(new CardBalanceChangedEvent(this, amount, BalanceChangeType.Deduct));
+            AddDomainEvent(new CardBalanceChangedEvent(this, transId, amount, BalanceChangeType.Deduct));
         }
 
-        public void RevertBalance(decimal amount)
+        public void RevertBalance(string transId, decimal amount)
         {
             Balance += amount;
-            AddDomainEvent(new CardBalanceChangedEvent(this, amount, BalanceChangeType.Revert));
+
+            AddDomainEvent(new CardBalanceChangedEvent(this, transId, amount, BalanceChangeType.Revert));
         }
     }
 }

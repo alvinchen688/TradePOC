@@ -45,9 +45,6 @@ namespace TradePOC.Infrastructure.Repositories
 
                 eventsToPublish = transaction.DomainEvents?.ToList();
                 transaction.ClearDomainEvents();
-                foreach (var domainEvent in transaction.DomainEvents)
-                    _mediator.Publish(domainEvent);
-                transaction.ClearDomainEvents();
             }
 
             if (eventsToPublish != null && eventsToPublish.Count > 0)
@@ -55,8 +52,6 @@ namespace TradePOC.Infrastructure.Repositories
                 var publishTasks = eventsToPublish.Select(ev => _mediator.Publish(ev));
                 await Task.WhenAll(publishTasks);
             }
-
-            await Task.CompletedTask;
         }
 
         public async Task<bool> ExistsAsync(string transactionId)
