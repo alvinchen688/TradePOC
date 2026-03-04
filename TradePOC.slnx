@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="TradePOC.App/TradePOC.App.csproj" Id="1417790e-46ae-4aef-8d70-1e9aa7a228c3" />
+  <Project Path="TradePOC.Console/TradePOC.Console.csproj" Id="acca8eb5-e02a-419a-a8a8-4a228f56e79a" />
+  <Project Path="TradePOC.Domain/TradePOC.Domain.csproj" Id="285d3cd3-3d34-4a89-a8d3-bbb059403ade" />
+  <Project Path="TradePOC.Infrastructure/TradePOC.Infrastructure.csproj" Id="a114c7e7-7519-4897-8bb3-1d20e7a08040" />
+  <Project Path="TradePOC.Tests/TradePOC.Tests.csproj" Id="4bd10c4d-de92-4357-9488-63c413480304" />
+</Solution>
